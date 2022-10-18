@@ -39,16 +39,17 @@ public class HashTable<E>
      * Insert into the hash table. If the item is
      * already present, do nothing.
      * Implementation issue: This routine doesn't allow you to use a lazily deleted location.  Do you see why?
-     * @param x the item to insert.
+     * @param element the item to insert.
+     * @param key   the key to hash the element to
      */
-    public boolean insert( E x )
+    public boolean insert( E key, E element )
     {
-        // Insert x as active
-        int currentPos = findPos( x );
+        // Insert element as active
+        int currentPos = findPos( key, element );
         if( isActive( currentPos ) )
             return false;
 
-        array[ currentPos ] = new HashEntry<>( x, true );
+        array[ currentPos ] = new HashEntry<>( key, element,true );
         currentActiveEntries++;
 
         // Rehash; see Section 5.5
@@ -90,22 +91,23 @@ public class HashTable<E>
         // Copy table over
         for( HashEntry<E> entry : oldArray )
             if( entry != null && entry.isActive )
-                insert( entry.element );
+                insert(entry.key, entry.element );
     }
 
     /**
      * Method that performs quadratic probing resolution.
-     * @param x the item to search for.
+     * @param element the item to search for.
+     * @param key the key hashed to store the element
      * @return the position where the search terminates.
      * Never returns an inactive location.
      */
-    private int findPos( E x )
+    private int findPos(E key, E element )
     {
         int offset = 1;
-        int currentPos = myhash( x );
+        int currentPos = myhash( key );
 
         while( array[ currentPos ] != null &&
-                !array[ currentPos ].element.equals( x ) )
+                !array[ currentPos ].element.equals( element ) )
         {
             currentPos += offset;  // Compute ith probe
             offset += 2;
@@ -118,12 +120,13 @@ public class HashTable<E>
 
     /**
      * Remove from the hash table.
-     * @param x the item to remove.
+     * @param element the item to remove.
+     * @param key the key for the item to remove.
      * @return true if item removed
      */
-    public boolean remove( E x )
+    public boolean remove( E key, E element )
     {
-        int currentPos = findPos( x );
+        int currentPos = findPos(key, element);
         if( isActive( currentPos ) )
         {
             array[ currentPos ].isActive = false;
@@ -154,23 +157,25 @@ public class HashTable<E>
 
     /**
      * Find an item in the hash table.
-     * @param x the item to search for.
+     * @param element the item to search for.
+     * @param key the key for the item to search for.
      * @return true if item is found
      */
-    public boolean contains( E x )
+    public boolean contains( E key, E element )
     {
-        int currentPos = findPos( x );
+        int currentPos = findPos( key, element );
         return isActive( currentPos );
     }
 
     /**
      * Find an item in the hash table.
-     * @param x the item to search for.
+     * @param key for the item to search for.
+     * @param element the item to search for.
      * @return the matching item.
      */
-    public E find( E x )
+    public E find( E key , E element)
     {
-        int currentPos = findPos( x );
+        int currentPos = findPos( key , element);
         if (!isActive( currentPos )) {
             return null;
         }
@@ -227,16 +232,18 @@ public class HashTable<E>
     private static class HashEntry<E>
     {
         public E  element;   // the element
+        public E key; // the key
         public boolean isActive;  // false if marked deleted
 
-        public HashEntry( E e )
+        public HashEntry( E k, E e )
         {
-            this( e, true );
+            this( k, e, true );
         }
 
-        public HashEntry( E e, boolean i )
+        public HashEntry( E k, E e,  boolean i )
         {
             element  = e;
+            key = k;
             isActive = i;
         }
     }
@@ -310,17 +317,17 @@ public class HashTable<E>
 
 
         for( int i = GAP; i != 0; i = ( i + GAP ) % NUMS )
-            H.insert( ""+i );
+            H.insert( ""+i,""+i );
         // Because GAP and NUMS are mutally prime, this inserts all numbers between 0 and 1999
         System.out.println( "H size is: " + H.size( ) );
         for( int i = GAP; i != 0; i = ( i + GAP ) % NUMS )
-            if( H.insert( ""+i ) )
+            if( H.insert( ""+i,""+i ) )
                 System.out.println( "ERROR Find fails " + i );
         for( int i = 1; i < NUMS; i+= 2 )
-            H.remove( ""+i );
+            H.remove( ""+i,""+i );
         for( int i = 1; i < NUMS; i+=2 )
         {
-            if( H.contains( ""+i ) )
+            if( H.contains( ""+i,""+i ) )
                 System.out.println( "ERROR OOPS!!! " +  i  );
         }
 
