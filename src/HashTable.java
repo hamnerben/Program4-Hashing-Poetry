@@ -15,7 +15,7 @@
  * Note that all "matching" is based on the equals method.
  * @author Mark Allen Weiss
  */
-public class HashTable<E>
+public class HashTable<K,E>
 {
     /**
      * Construct the hash table.
@@ -42,7 +42,7 @@ public class HashTable<E>
      * @param element the item to insert.
      * @param key   the key to hash the element to
      */
-    public boolean insert( E key, E element )
+    public boolean insert(K key, E element )
     {
         // Insert element as active
         int currentPos = findPos( key, element );
@@ -81,7 +81,7 @@ public class HashTable<E>
      */
     private void rehash( )
     {
-        HashEntry<E> [ ] oldArray = array;
+        HashEntry<K, E> [ ] oldArray = array;
 
         // Create a new double-sized, empty table
         allocateArray( 2 * oldArray.length );
@@ -89,7 +89,7 @@ public class HashTable<E>
         currentActiveEntries = 0;
 
         // Copy table over
-        for( HashEntry<E> entry : oldArray )
+        for( HashEntry<K, E> entry : oldArray )
             if( entry != null && entry.isActive )
                 insert(entry.key, entry.element );
     }
@@ -101,7 +101,7 @@ public class HashTable<E>
      * @return the position where the search terminates.
      * Never returns an inactive location.
      */
-    private int findPos(E key, E element )
+    private int findPos(K key, E element )
     {
         int offset = 1;
         int currentPos = myhash( key );
@@ -124,7 +124,7 @@ public class HashTable<E>
      * @param key the key for the item to remove.
      * @return true if item removed
      */
-    public boolean remove( E key, E element )
+    public boolean remove( K key, E element )
     {
         int currentPos = findPos(key, element);
         if( isActive( currentPos ) )
@@ -161,7 +161,7 @@ public class HashTable<E>
      * @param key the key for the item to search for.
      * @return true if item is found
      */
-    public boolean contains( E key, E element )
+    public boolean contains( K key, E element )
     {
         int currentPos = findPos( key, element );
         return isActive( currentPos );
@@ -173,7 +173,7 @@ public class HashTable<E>
      * @param element the item to search for.
      * @return the matching item.
      */
-    public E find( E key , E element)
+    public E find( K key , E element)
     {
         int currentPos = findPos( key , element);
         if (!isActive( currentPos )) {
@@ -214,13 +214,13 @@ public class HashTable<E>
 
     /**
      *
-      * @param x the Item to be hashed
+      * @param k the key for the item to be hashed
      * @return the hashCode for the element
      * 
      */
-    private int myhash( E x )
+    private int myhash( K k )
     {
-        int hashVal = x.hashCode( );
+        int hashVal = k.hashCode( );
 
         hashVal %= array.length;
         if( hashVal < 0 )
@@ -229,18 +229,18 @@ public class HashTable<E>
         return hashVal;
     }
 
-    private static class HashEntry<E>
+    private static class HashEntry<K,E>
     {
         public E  element;   // the element
-        public E key; // the key
+        public K key; // the key
         public boolean isActive;  // false if marked deleted
 
-        public HashEntry( E k, E e )
+        public HashEntry( K k, E e )
         {
             this( k, e, true );
         }
 
-        public HashEntry( E k, E e,  boolean i )
+        public HashEntry( K k, E e,  boolean i )
         {
             element  = e;
             key = k;
@@ -250,7 +250,7 @@ public class HashTable<E>
 
     private static final int DEFAULT_TABLE_SIZE = 101;
 
-    private HashEntry<E> [ ] array; // The array of elements
+    private HashEntry<K, E> [ ] array; // The array of elements
     private int occupiedCt;         // The number of occupied cells: active or deleted
     private int currentActiveEntries;                  // Current size
 
@@ -305,7 +305,7 @@ public class HashTable<E>
     // Simple main
     public static void main( String [ ] args )
     {
-        HashTable<String> H = new HashTable<>( );
+        HashTable<String, String> H = new HashTable<>( );
 
 
         long startTime = System.currentTimeMillis( );
