@@ -329,6 +329,16 @@ public class HashTable<E>
         System.out.println( "Elapsed time: " + (endTime - startTime) );
         System.out.println( "H size is: " + H.size( ) );
         System.out.println( "Array size is: " + H.capacity( ) );
+
+        System.out.println("\n\n==========================================================\n");
+        for(int i = 0; i < H.capacity(); i++){
+            if(H.array[i] != null){
+                System.out.println(H.array[i].element);
+            }
+            else
+                System.out.println();
+        }
+
     }
 
 }
