@@ -35,6 +35,7 @@ public class HashTable<K,E>
         doClear( );
     }
 
+
     /**
      * Insert into the hash table. If the item is
      * already present, do nothing.
@@ -45,7 +46,8 @@ public class HashTable<K,E>
     public boolean insert(K key, E element )
     {
         // Insert element as active
-        int currentPos = findPos( key, element );
+
+        int currentPos = findPos(new ElementInfo<>(key, element));
         if( isActive( currentPos ) )
             return false;
 
@@ -95,19 +97,33 @@ public class HashTable<K,E>
     }
 
     /**
+     * An object class to store the key with the
+     * item in the hash table
+     * @param <K> the key for the item to store
+     * @param <E> the item to store
+     */
+    public static class ElementInfo<K, E>{
+        K key;
+        E element;
+        ElementInfo(K k, E e){
+            key = k;
+            element = e;
+        }
+    }
+
+    /**
      * Method that performs quadratic probing resolution.
-     * @param element the item to search for.
-     * @param key the key hashed to store the element
+     * @param elementInfo the item to search for and the key hashed to store the element
      * @return the position where the search terminates.
      * Never returns an inactive location.
      */
-    private int findPos(K key, E element )
+    private int findPos(ElementInfo<K, E> elementInfo )
     {
         int offset = 1;
-        int currentPos = myhash( key );
+        int currentPos = myhash( elementInfo.key );
 
         while( array[ currentPos ] != null &&
-                !array[ currentPos ].element.equals( element ) )
+                !array[ currentPos ].element.equals( elementInfo.element ) )
         {
             currentPos += offset;  // Compute ith probe
             offset += 2;

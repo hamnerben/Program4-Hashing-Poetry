@@ -52,6 +52,14 @@ public class WordFreqInfo {
         }
     }
 
+    public static void main(String[] args) {
+        String name = "sam";
+        WordFreqInfo freqInfo = new WordFreqInfo(name, 1);
+        HashTable<String, WordFreqInfo> table = new HashTable<String, WordFreqInfo>();
 
+        table.insert(name, freqInfo );
+        System.out.println(table.find("sam", freqInfo));
+        table.find()
+    }
 }
 
