@@ -47,7 +47,7 @@ public class HashTable<K,E>
     {
         // Insert element as active
 
-        int currentPos = findPos(new ElementInfo<>(key, element));
+        int currentPos = findPos( key );
         if( isActive( currentPos ) )
             return false;
 
@@ -96,34 +96,20 @@ public class HashTable<K,E>
                 insert(entry.key, entry.element );
     }
 
-    /**
-     * An object class to store the key with the
-     * item in the hash table
-     * @param <K> the key for the item to store
-     * @param <E> the item to store
-     */
-    public static class ElementInfo<K, E>{
-        K key;
-        E element;
-        ElementInfo(K k, E e){
-            key = k;
-            element = e;
-        }
-    }
 
     /**
      * Method that performs quadratic probing resolution.
-     * @param elementInfo the item to search for and the key hashed to store the element
+     * @param key the item to search for and the key hashed to store the element
      * @return the position where the search terminates.
      * Never returns an inactive location.
      */
-    private int findPos(ElementInfo<K, E> elementInfo )
+    private int findPos(K key )
     {
         int offset = 1;
-        int currentPos = myhash( elementInfo.key );
+        int currentPos = myhash( key );
 
         while( array[ currentPos ] != null &&
-                !array[ currentPos ].element.equals( elementInfo.element ) )
+                !array[ currentPos ].key.equals( key ) )
         {
             currentPos += offset;  // Compute ith probe
             offset += 2;
@@ -136,13 +122,12 @@ public class HashTable<K,E>
 
     /**
      * Remove from the hash table.
-     * @param element the item to remove.
      * @param key the key for the item to remove.
      * @return true if item removed
      */
-    public boolean remove( K key, E element )
+    public boolean remove( K key )
     {
-        int currentPos = findPos(key, element);
+        int currentPos = findPos(key);
         if( isActive( currentPos ) )
         {
             array[ currentPos ].isActive = false;
@@ -173,25 +158,23 @@ public class HashTable<K,E>
 
     /**
      * Find an item in the hash table.
-     * @param element the item to search for.
      * @param key the key for the item to search for.
      * @return true if item is found
      */
-    public boolean contains( K key, E element )
+    public boolean contains( K key )
     {
-        int currentPos = findPos( key, element );
+        int currentPos = findPos( key );
         return isActive( currentPos );
     }
 
     /**
      * Find an item in the hash table.
      * @param key for the item to search for.
-     * @param element the item to search for.
      * @return the matching item.
      */
-    public E find( K key , E element)
+    public E find( K key )
     {
-        int currentPos = findPos( key , element);
+        int currentPos = findPos( key );
         if (!isActive( currentPos )) {
             return null;
         }
@@ -340,10 +323,10 @@ public class HashTable<K,E>
             if( H.insert( ""+i,""+i ) )
                 System.out.println( "ERROR Find fails " + i );
         for( int i = 1; i < NUMS; i+= 2 )
-            H.remove( ""+i,""+i );
+            H.remove( ""+i );
         for( int i = 1; i < NUMS; i+=2 )
         {
-            if( H.contains( ""+i,""+i ) )
+            if( H.contains( ""+i ) )
                 System.out.println( "ERROR OOPS!!! " +  i  );
         }
 
