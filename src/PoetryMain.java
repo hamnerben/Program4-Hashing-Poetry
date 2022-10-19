@@ -1,7 +1,20 @@
+import java.util.Random;
 
 public class PoetryMain {
 
+    public class WritePoetry{
+        HashTable<String, WordFreqInfo> hashTable;
 
+        private String pickNextWord(String myWord){
+            WordFreqInfo wordFreqInfo = hashTable.find(myWord);
+            if(wordFreqInfo == null) return null;
+            int random = (int) (Math.random() * wordFreqInfo.occurCt) + 1; // gets the random index start at 1
+            while(true){
+                
+            }
+        }
+
+    }
 
 
 
